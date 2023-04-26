@@ -29,7 +29,7 @@ class LocationHelper{
   return predictions;
   }
 
-  Future<Location> getPlaceById(Prediction prediction)async{
+  Future<PlaceDetails> getPlaceById(Prediction prediction)async{
 
     GoogleMapsPlaces places = GoogleMapsPlaces(
         apiKey: GOOGLE_API_KEY,
@@ -37,7 +37,7 @@ class LocationHelper{
 
     PlacesDetailsResponse detail = await places.getDetailsByPlaceId(prediction.placeId!);
 
-    return detail.result.geometry!.location;
+    return detail.result;
   }
 
 

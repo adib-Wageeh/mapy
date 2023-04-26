@@ -13,7 +13,7 @@ class ViewMapLoaded extends ViewMapState {
 }
 
 class ViewMapDirection extends ViewMapState {
-  final LatLng location;
+  final PlaceDetails location;
   final Set<Polyline> polyline;
   final double distance;
   final LatLng start;
@@ -21,7 +21,7 @@ class ViewMapDirection extends ViewMapState {
 }
 
 class ViewMapPoint extends ViewMapState {
-  final LatLng location;
+  final PlaceDetails location;
   ViewMapPoint({required this.location});
 }
 

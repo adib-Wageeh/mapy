@@ -1,10 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:google_maps_webservice/places.dart';
 
 class ShowMapWidget extends StatelessWidget {
   final Set<Polyline>? polylines;
-  final LatLng latLng;
+  final Location latLng;
   final LatLng? start;
   const ShowMapWidget({
     super.key,
@@ -24,7 +25,7 @@ class ShowMapWidget extends StatelessWidget {
       markers: {
         Marker(markerId: const MarkerId("value"),
             position: LatLng(
-                latLng.latitude,latLng.longitude)
+                latLng.lat,latLng.lng)
         ),
         (start != null)?Marker(markerId: const MarkerId("start"),
             position: LatLng(
@@ -36,7 +37,7 @@ class ShowMapWidget extends StatelessWidget {
       initialCameraPosition: CameraPosition(
         zoom: 14.151926040649414
         ,target:LatLng(
-          latLng.latitude,latLng.longitude),),
+          latLng.lat,latLng.lng),),
       onMapCreated: (GoogleMapController controller) {
         _controller.complete(controller);
       },

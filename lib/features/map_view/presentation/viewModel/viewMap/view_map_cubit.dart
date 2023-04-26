@@ -39,23 +39,30 @@ class ViewMapCubit extends Cubit<ViewMapState> {
     emit(ViewMapLoaded(location: LatLng(position.latitude, position.longitude)));
   }
 
+
+
   Future<void> getLocationByPlaceId(Prediction prediction)async{
 
     final location = await locationHelper.getPlaceById(prediction);
-    emit(ViewMapPoint(location: LatLng(location.lat, location.lng)));
+
+
+    emit(ViewMapPoint(location: location));
   }
 
-  Future<void> viewDirections(LatLng end,BuildContext context)async{
+
+
+
+  Future<void> viewDirections(PlaceDetails end,BuildContext context)async{
 
     final Position start = await Geolocator.getCurrentPosition();
 
-
-    if(Geolocator.distanceBetween(start.latitude, start.longitude, end.latitude, end.longitude)<30){
+    final endLatlng = LatLng(end.geometry!.location.lat,end.geometry!.location.lng);
+    if(Geolocator.distanceBetween(start.latitude, start.longitude, end.geometry!.location.lat, end.geometry!.location.lat)<30){
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("please select another point"), ));
     }else {
       final result = await locationHelper.drawDirections(
-          LatLng(start.latitude, start.longitude), end);
-      double distance = locationHelper.getDistance(LatLng(start.latitude,start.longitude), end);
+          LatLng(start.latitude, start.longitude), endLatlng);
+      double distance = locationHelper.getDistance(LatLng(start.latitude,start.longitude), endLatlng);
       emit(ViewMapDirection(start: LatLng(start.latitude, start.longitude),polyline: result,location:  end,distance: distance));
     }
 

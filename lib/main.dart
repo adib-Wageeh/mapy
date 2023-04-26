@@ -24,7 +24,7 @@ void main() {
       ]
       ,child: MaterialApp(
   debugShowCheckedModeBanner: false
-  ,home: const MapSample(),
+  ,home: MapSample(),
   builder: EasyLoading.init(),
   )));
 

@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-
+import 'package:google_maps_webservice/places.dart';
 import '../../viewModel/viewMap/view_map_cubit.dart';
 
 class CustomDirectionsButton extends StatelessWidget {
 
-  final LatLng end;
+  final PlaceDetails end;
   const CustomDirectionsButton({required this.end,Key? key}) : super(key: key);
 
   @override
