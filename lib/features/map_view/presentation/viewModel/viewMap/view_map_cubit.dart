@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:meta/meta.dart';
+import 'package:mapy/main.dart';
 import 'package:geolocator/geolocator.dart';
 import '../../../../../core/location_helper/location_helper.dart';
 import 'package:google_maps_webservice/places.dart';
@@ -10,6 +10,8 @@ part 'view_map_state.dart';
 
 class ViewMapCubit extends Cubit<ViewMapState> {
   ViewMapCubit() : super(ViewMapInitial());
+
+  LocationHelper locationHelper = getIt<LocationHelper>();
 
   Future<void> getCurrentLocation()async{
 
@@ -39,14 +41,12 @@ class ViewMapCubit extends Cubit<ViewMapState> {
 
   Future<void> getLocationByPlaceId(Prediction prediction)async{
 
-    LocationHelper locationHelper = LocationHelper();
     final location = await locationHelper.getPlaceById(prediction);
     emit(ViewMapPoint(location: LatLng(location.lat, location.lng)));
   }
 
   Future<void> viewDirections(LatLng end,BuildContext context)async{
 
-    LocationHelper locationHelper = LocationHelper();
     final Position start = await Geolocator.getCurrentPosition();
 
 
@@ -56,7 +56,7 @@ class ViewMapCubit extends Cubit<ViewMapState> {
       final result = await locationHelper.drawDirections(
           LatLng(start.latitude, start.longitude), end);
       double distance = locationHelper.getDistance(LatLng(start.latitude,start.longitude), end);
-      emit(ViewMapDirection(polyline: result,location:  end,distance: distance));
+      emit(ViewMapDirection(start: LatLng(start.latitude, start.longitude),polyline: result,location:  end,distance: distance));
     }
 
   }

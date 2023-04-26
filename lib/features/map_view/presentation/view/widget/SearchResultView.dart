@@ -26,11 +26,6 @@ class SearchResultView extends StatelessWidget {
                   child: InkWell(
                     onTap: ()async{
                       textEditingController.clear();
-                      EasyLoading.instance
-                        ..backgroundColor = Colors.white
-                        ..indicatorColor = Colors.black
-                        ..maskColor = Colors.black
-                        ..userInteractions = false;
                       EasyLoading.show(status: 'loading...');
                       await BlocProvider.of<ViewPlacesCubit>(context).searchLocationByName("");
                       await BlocProvider.of<ViewMapCubit>(context).getLocationByPlaceId(state.predictions[index]);

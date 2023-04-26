@@ -5,8 +5,10 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 class ShowMapWidget extends StatelessWidget {
   final Set<Polyline>? polylines;
   final LatLng latLng;
+  final LatLng? start;
   const ShowMapWidget({
     super.key,
+    this.start,
     required this.latLng,
     this.polylines,
     required Completer<GoogleMapController> controller,
@@ -23,7 +25,12 @@ class ShowMapWidget extends StatelessWidget {
         Marker(markerId: const MarkerId("value"),
             position: LatLng(
                 latLng.latitude,latLng.longitude)
-        )
+        ),
+        (start != null)?Marker(markerId: const MarkerId("start"),
+            position: LatLng(
+                start!.latitude,start!.longitude)
+        ):const Marker(markerId: MarkerId(""))
+
       },
       mapType: MapType.normal,
       initialCameraPosition: CameraPosition(

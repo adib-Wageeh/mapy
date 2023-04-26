@@ -16,7 +16,8 @@ class ViewMapDirection extends ViewMapState {
   final LatLng location;
   final Set<Polyline> polyline;
   final double distance;
-  ViewMapDirection({required this.distance,required this.location,required this.polyline});
+  final LatLng start;
+  ViewMapDirection({required this.distance,required this.location,required this.polyline,required this.start});
 }
 
 class ViewMapPoint extends ViewMapState {
