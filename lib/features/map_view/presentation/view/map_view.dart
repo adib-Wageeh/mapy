@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mapy/features/map_view/presentation/view/widget/BackButtonWidget.dart';
 import 'package:mapy/features/map_view/presentation/view/widget/CustomDirectionsButton.dart';
@@ -31,16 +32,32 @@ class MapSample extends StatelessWidget {
         body: BlocConsumer<ViewMapCubit, ViewMapState>(
         listener: (context,state){
          if(state is ViewMapLoaded){
+           EasyLoading.dismiss();
            animateTo(state.location.latitude,state.location.longitude);
          }
          if(state is ViewMapDirection){
+           EasyLoading.dismiss();
            animateTo(state.start.latitude,state.start.longitude);
          }
          if(state is ViewMapPoint){
+           EasyLoading.dismiss();
            animateTo(state.location.geometry!.location.lat,state.location.geometry!.location.lng);
          }
+         if(state is ViewMapLoading){
+           EasyLoading.show();
+         }
+         if(state is ViewMapMessage){
+           EasyLoading.dismiss();
+           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message)));
+         }
         }
-        ,builder: (context, state) {
+        ,buildWhen: (previousState, currentState){
+          if(currentState is ViewMapLoading || currentState is ViewMapMessage){
+            return false;
+          }
+          return true;
+        },
+          builder: (context, state) {
             if (state is ViewMapLoaded) {
               return Stack(
                 children: [
@@ -54,7 +71,6 @@ class MapSample extends StatelessWidget {
               return Stack(
                 children: [
                   ShowMapWidget(controller: _controller,latLng: state.location.geometry!.location),
-                  FloatingSaveWidget(text: "Save Location",onTap: (){}),
                   const BackButtonWidget(),
                   CustomDirectionsButton(end: state.location,),
                 ],
@@ -63,16 +79,17 @@ class MapSample extends StatelessWidget {
               return Stack(
                 children: [
                   ShowMapWidget(start: state.start,controller: _controller,latLng: Location(lng: state.location.geometry!.location.lng,lat: state.location.geometry!.location.lat),polylines: state.polyline),
-                  FloatingSaveWidget(text: "Save Directions",onTap: (){}),
+                  FloatingSaveWidget(text: "Save Directions",onTap: ()async{
+                    await BlocProvider.of<ViewMapCubit>(context).saveDirection(context, state.location);
+                  }),
                   const BackButtonWidget(),
                   FromToContainer(start: state.start,onTab: (Location place){
                     animateTo(place.lat,place.lng);
                   },end: state.location,distance: state.distance),
                 ],
               );
-            }else{
-              return const Center(child: CircularProgressIndicator());
             }
+            return Container();
           },
         ),
       );

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mapy/main.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../../core/location_helper/location_helper.dart';
 import 'package:google_maps_webservice/places.dart';
 
@@ -15,23 +16,24 @@ class ViewMapCubit extends Cubit<ViewMapState> {
 
   Future<void> getCurrentLocation()async{
 
+    emit(ViewMapLoading());
     bool serviceEnabled;
     LocationPermission permission;
 
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      emit(ViewMapError(error: 'Location services are disabled.'));
+      emit(ViewMapMessage(message: 'Location services are disabled.'));
     }
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        emit(ViewMapError(error: 'Location permissions are denied'));
+        emit(ViewMapMessage(message: 'Location permissions are denied'));
       }
     }
     if (permission == LocationPermission.deniedForever) {
-      emit(ViewMapError(
-          error: 'Location permissions are permanently denied, we cannot request permissions.'));
+      emit(ViewMapMessage(
+          message: 'Location permissions are permanently denied, we cannot request permissions.'));
     }
 
     final Position position = await Geolocator.getCurrentPosition();
@@ -43,9 +45,8 @@ class ViewMapCubit extends Cubit<ViewMapState> {
 
   Future<void> getLocationByPlaceId(Prediction prediction)async{
 
+    emit(ViewMapLoading());
     final location = await locationHelper.getPlaceById(prediction);
-
-
     emit(ViewMapPoint(location: location));
   }
 
@@ -53,12 +54,12 @@ class ViewMapCubit extends Cubit<ViewMapState> {
 
 
   Future<void> viewDirections(PlaceDetails end,BuildContext context)async{
-
+    emit(ViewMapLoading());
     final Position start = await Geolocator.getCurrentPosition();
 
     final endLatlng = LatLng(end.geometry!.location.lat,end.geometry!.location.lng);
     if(Geolocator.distanceBetween(start.latitude, start.longitude, end.geometry!.location.lat, end.geometry!.location.lat)<30){
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("please select another point"), ));
+      emit(ViewMapMessage(message: "please select another point"));
     }else {
       final result = await locationHelper.drawDirections(
           LatLng(start.latitude, start.longitude), endLatlng);
@@ -68,5 +69,18 @@ class ViewMapCubit extends Cubit<ViewMapState> {
 
   }
 
+
+  Future<void> saveDirection(BuildContext context,PlaceDetails end)async{
+    emit(ViewMapLoading());
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    if(prefs.getStringList(end.name) == null){
+      await prefs.setStringList(end.name, [end.geometry!.location.lat.toString(),end.geometry!.location.lng.toString()]);
+      emit(ViewMapMessage(message: "Direction saved successfully"));
+    }else{
+      emit(ViewMapMessage(message: "Direction already saved !!"));
+    }
+
+  }
 
 }

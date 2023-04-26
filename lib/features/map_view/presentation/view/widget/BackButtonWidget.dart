@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import '../../viewModel/viewMap/view_map_cubit.dart';
 
 class BackButtonWidget extends StatelessWidget {
@@ -16,9 +15,7 @@ class BackButtonWidget extends StatelessWidget {
         child: IconButton(
         padding: EdgeInsets.zero
         ,onPressed: ()async{
-        EasyLoading.show(status: 'loading...');
         await BlocProvider.of<ViewMapCubit>(context).getCurrentLocation();
-        EasyLoading.dismiss();
     },
           color: Colors.white,
           icon: const Icon(Icons.arrow_back_ios_new_sharp)),

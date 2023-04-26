@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:mapy/features/map_view/presentation/viewModel/viewMap/view_map_cubit.dart';
 import '../../viewModel/view_places/view_places_cubit.dart';
 
@@ -26,10 +25,8 @@ class SearchResultView extends StatelessWidget {
                   child: InkWell(
                     onTap: ()async{
                       textEditingController.clear();
-                      EasyLoading.show(status: 'loading...');
                       await BlocProvider.of<ViewPlacesCubit>(context).searchLocationByName("");
                       await BlocProvider.of<ViewMapCubit>(context).getLocationByPlaceId(state.predictions[index]);
-                      EasyLoading.dismiss();
                     },
                     child: Container(
                         width: double.infinity,

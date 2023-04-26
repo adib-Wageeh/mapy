@@ -25,8 +25,8 @@ class ViewMapPoint extends ViewMapState {
   ViewMapPoint({required this.location});
 }
 
-class ViewMapError extends ViewMapState {
+class ViewMapMessage extends ViewMapState {
 
-  final String error;
-  ViewMapError({required this.error});
+  final String message;
+  ViewMapMessage({required this.message});
 }
