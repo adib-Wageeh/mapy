@@ -5,7 +5,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:google_maps_webservice/places.dart';
 import 'package:http/http.dart';
-
 import '../../features/map_view/model/polyline_response.dart';
 
 const GOOGLE_API_KEY = "";

@@ -17,9 +17,10 @@ class FromToContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Positioned(
-    top: 50,
-    right: 30
+    top: size.height*0.06,
+    right: size.width*0.065
     ,child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

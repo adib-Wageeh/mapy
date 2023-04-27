@@ -7,11 +7,13 @@ import 'package:mapy/features/map_view/presentation/view/widget/BackButtonWidget
 import 'package:mapy/features/map_view/presentation/view/widget/CustomDirectionsButton.dart';
 import 'package:mapy/features/map_view/presentation/view/widget/FloatingSaveWidget.dart';
 import 'package:mapy/features/map_view/presentation/view/widget/FromToContainer.dart';
+import 'package:mapy/features/map_view/presentation/view/widget/GetSavedDirectionsModalSheet.dart';
 import 'package:mapy/features/map_view/presentation/view/widget/SearchContainer.dart';
 import 'package:mapy/features/map_view/presentation/view/widget/SearchResultView.dart';
 import 'package:mapy/features/map_view/presentation/view/widget/ShowMapWidget.dart';
 import 'package:mapy/features/map_view/presentation/viewModel/viewMap/view_map_cubit.dart';
 import 'package:google_maps_webservice/places.dart';
+import 'package:nil/nil.dart';
 
 class MapSample extends StatelessWidget {
 
@@ -64,6 +66,10 @@ class MapSample extends StatelessWidget {
                   ShowMapWidget(controller: _controller,latLng:Location(lng: state.location.longitude,lat: state.location.latitude)),
                   SearchContainer(textEditingController: TextEditingController()),
                   SearchResultView(textEditingController: TextEditingController()),
+                  FloatingSaveWidget(text: "Saved Directions",onTap: ()async{
+                    final directions = await BlocProvider.of<ViewMapCubit>(context).getDirections();
+                    showModalBottomSheet(context: context, builder: (context)=>GetSavedDirectionsModalSheet(locations: directions,));
+                  }),
                 ],
               );
             }
@@ -89,8 +95,11 @@ class MapSample extends StatelessWidget {
                 ],
               );
             }
-            return Container();
+            return nil;
           },
         ),
       );
     }}
+
+
+

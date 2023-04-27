@@ -10,9 +10,10 @@ class CustomDirectionsButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Positioned(
-        bottom: 20,
-        left: 20
+        bottom: size.height*0.05,
+        left: size.width*0.065
         ,child: FloatingActionButton(onPressed: () async{
       await BlocProvider.of<ViewMapCubit>(context).viewDirections(end,context);
     },

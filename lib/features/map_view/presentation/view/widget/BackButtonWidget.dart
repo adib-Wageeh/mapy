@@ -7,9 +7,10 @@ class BackButtonWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Positioned(
-      top: 50,
-      left: 30
+      top: size.height*0.08,
+      left: size.width*0.065
       ,child: Container(
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(36),color: Colors.deepPurpleAccent),
         child: IconButton(

@@ -10,20 +10,19 @@ part 'view_places_state.dart';
 class ViewPlacesCubit extends Cubit<ViewPlacesState> {
   ViewPlacesCubit() : super(ViewPlacesInitial());
 
+  int again =1;
 
   Future<void> searchLocationByName(String text)async{
-
-    if(text.isEmpty){
-      emit(ViewPlacesEmpty());
-    }else {
-      LocationHelper locationHelper = LocationHelper();
+    again =1;
+    LocationHelper locationHelper = LocationHelper();
       final result = await locationHelper.searchLocation(text);
-      emit(ViewPlacesLoaded(predictions: result));
-    }
 
+      if(result.isEmpty){
+        again =0;
+        emit(ViewPlacesEmpty());
+      }else if(again !=0){
+        emit(ViewPlacesLoaded(predictions: result));
+      }
   }
-
-
-
 
 }

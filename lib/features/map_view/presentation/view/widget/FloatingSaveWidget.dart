@@ -14,9 +14,10 @@ class FloatingSaveWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Positioned(
-      right: 20,
-      bottom: 20,
+      right: size.width*0.07,
+      bottom: size.height*0.05,
       child: Container(
         height: 55,
         width: 120,

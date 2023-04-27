@@ -17,13 +17,7 @@ class ViewMapCubit extends Cubit<ViewMapState> {
   Future<void> getCurrentLocation()async{
 
     emit(ViewMapLoading());
-    bool serviceEnabled;
     LocationPermission permission;
-
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      emit(ViewMapMessage(message: 'Location services are disabled.'));
-    }
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
@@ -56,7 +50,6 @@ class ViewMapCubit extends Cubit<ViewMapState> {
   Future<void> viewDirections(PlaceDetails end,BuildContext context)async{
     emit(ViewMapLoading());
     final Position start = await Geolocator.getCurrentPosition();
-
     final endLatlng = LatLng(end.geometry!.location.lat,end.geometry!.location.lng);
     if(Geolocator.distanceBetween(start.latitude, start.longitude, end.geometry!.location.lat, end.geometry!.location.lat)<30){
       emit(ViewMapMessage(message: "please select another point"));
@@ -75,12 +68,30 @@ class ViewMapCubit extends Cubit<ViewMapState> {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
     if(prefs.getStringList(end.name) == null){
-      await prefs.setStringList(end.name, [end.geometry!.location.lat.toString(),end.geometry!.location.lng.toString()]);
+      await prefs.setStringList(end.name, [end.placeId,end.geometry!.location.lat.toString(),end.geometry!.location.lng.toString()]);
       emit(ViewMapMessage(message: "Direction saved successfully"));
     }else{
       emit(ViewMapMessage(message: "Direction already saved !!"));
     }
 
   }
+
+  Future<Map<String,List<String>>> getDirections()async{
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    Map<String,List<String>> directions={};
+    String key="";
+    for(int x=0;prefs.getKeys().length>x;x++){
+      key = prefs.getKeys().elementAt(x);
+      directions.addAll({key:prefs.getStringList(key)!});
+    }
+    return directions;
+  }
+
+  Future<Map<String,List<String>>> deleteDirection(String name)async{
+
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove(name);
+    return await getDirections();
+}
 
 }
